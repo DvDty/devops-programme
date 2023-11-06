@@ -13,9 +13,6 @@
       file:
         path: "{{ build_dir }}"
         state: directory
-        owner: root
-        group: root
-        mode: '0755'
 
     - name: Copy files.
       copy:
