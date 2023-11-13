@@ -1,0 +1,17 @@
+name: ci
+
+on:
+  push:
+    branches: ['github-actions-practice']
+
+jobs:
+  linters:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: pylint
+        uses: cclauss/GitHub-Action-for-pylint@0.7.0
+
+      - name: black
+        uses: psf/black@stable
