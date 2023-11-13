@@ -41,9 +41,11 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./app
-        run: |
-          python -m pip install -r requirements.txt
-          python -m unittest app_test.py
+        run: python -m pip install -r requirements.txt
+
+      - name: Run tests
+        working-directory: ./app
+        run: python -m unittest app_test.py
 
   security:
     name: gitleaks
@@ -89,6 +91,5 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: "{{defaultContext}}:pipeline-dockerhub-nginx"
           push: true
           tags: dvdty/github-actions-practice:${{ github.sha }}
