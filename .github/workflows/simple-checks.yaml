@@ -5,7 +5,7 @@ on:
     branches: ['github-actions-practice']
 
 jobs:
-  linters:
+  editorconfig:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,12 +20,24 @@ jobs:
       - name: Run checker
         run: editorconfig-checker
 
+  pylint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Run Python linter - pylint
         uses: cclauss/GitHub-Action-for-pylint@0.7.0
 
+  black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Run Python linter - black
         uses: psf/black@stable
 
+  markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - name: Run markdown linter
         uses: nosborn/github-action-markdown-cli@v3.3.0
         with:
@@ -91,7 +103,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          push: true
+          push: false
           tags: dvdty/github-actions-practice:${{ github.sha }}
 
       - name: Run Trivy vulnerability scanner
@@ -103,3 +115,9 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: dvdty/github-actions-practice:${{ github.sha }}
