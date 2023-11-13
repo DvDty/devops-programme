@@ -103,7 +103,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          push: false
+          load: true
           tags: dvdty/github-actions-practice:${{ github.sha }}
 
       - name: Run Trivy vulnerability scanner
