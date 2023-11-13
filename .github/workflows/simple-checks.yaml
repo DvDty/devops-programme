@@ -15,8 +15,7 @@ jobs:
         run: exit 'editorconfig does not exist.'
 
       - name: run editorconfig
-        uses: editorconfig-checker/action-editorconfig-checker@main
-        run: editorconfig-checker
+        uses: zbeekman/EditorConfig-Action@v1.1.1
 
       - name: Run Python linter - pylint
         uses: cclauss/GitHub-Action-for-pylint@0.7.0
