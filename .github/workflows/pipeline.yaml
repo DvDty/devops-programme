@@ -1,4 +1,4 @@
-name: ci
+name: pipeline
 
 on:
   push:
@@ -66,7 +66,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: ./app
-        run: pip install pylint -r requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Run tests
         working-directory: ./app
