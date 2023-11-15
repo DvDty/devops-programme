@@ -112,12 +112,12 @@ jobs:
         with:
           context: .
           load: true
-          tags: ${{ github.sha }}
+#          tags: ${{ github.sha }}
 
       - name: Scan image
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: '${{ steps.build.outputs.imageid }}:${{ github.sha }}'
+          image-ref: ${{ steps.build.outputs.imageid }}
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
