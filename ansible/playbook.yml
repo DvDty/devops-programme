@@ -1,49 +1,52 @@
-- hosts: localhost
-  become: no
+- name: Manage Python application.
+  hosts: localhost
 
   vars:
-    image_name: "vutoff/test-python-app"
-    image_tag: "v0.2"
-    application_directory: "/tmp/app"
+    image_name: "python-demo-app"
+    image_tag: "v1"
+    listen_port: "8080"
+    build_dir: "./build"
 
   tasks:
-    - name: Create {{ application_directory }} directory
+    - name: Create build directory.
       file:
-        name: "{{ application_directory }}"
+        path: "{{ build_dir }}"
         state: directory
-        mode: 0755
 
-    - name: Checkout repository
-      git:
-        repo: git@github.com:vutoff/devops-programme
-        dest: "{{ application_directory }}"
-        version: main
-        update: yes
+    - name: Copy files.
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      loop:
+        - src: ../Dockerfile
+          dest: "{{ build_dir }}"
 
-    - name: Build Docker image
+        - src: ../app/requirements.txt
+          dest: "{{ build_dir }}"
+
+        - src: ../app/app.py
+          dest: "{{ build_dir }}/app/"
+
+        - src: ../app/app_test.py
+          dest: "{{ build_dir }}/app/"
+
+    - name: Build image.
       docker_image:
-        build:
-          path: "{{ application_directory }}"
         name: "{{ image_name }}"
         tag: "{{ image_tag }}"
-        push: true
         source: build
-        docker_host: "unix://{{ ansible_env.HOME }}/.rd/docker.sock"
+        build:
+          path: "{{ build_dir }}"
         state: present
+        push: true
+        repository: "dvdty/ansible-python-app:{{ image_tag }}"
 
-    - name: Run the built Docker image
+    - name: Run container.
       docker_container:
-        name: "python-web"
-        image: "{{ image_name }}:{{ image_tag }}"
+        name: run
         state: started
-        auto_remove: yes
+        image: "{{ image_name }}:{{ image_tag }}"
         ports:
           - "5001:5001"
         env:
           PORT: "5001"
-        healthcheck:
-          test: ["CMD", "curl", "--fail", "http://localhost:5001"]
-          interval: 10s
-          retries: 3
-          start_period: 5s
-        docker_host: "unix://{{ ansible_env.HOME }}/.rd/docker.sock"
